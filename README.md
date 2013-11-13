@@ -10,7 +10,7 @@ Usage
 **Supported Switches:**
 
 * -i = Install Xtables-Addons
-* -u = Update MaxMind Databases
+* -u = Update GeoIP Data Files
 * -h = Show This Help Menu
 
 Supported OS

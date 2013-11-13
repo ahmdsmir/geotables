@@ -141,7 +141,7 @@ case $1 in
     echo
     echo '[Options].:'
     echo '            -i = Install Xtables-Addons'
-    echo '            -u = Update MaxMind Databases'
+    echo '            -u = Update GeoIP Data Files'
     echo '            -h = Show This Help Menu'
     echo
     ;;
