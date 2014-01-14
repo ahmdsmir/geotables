@@ -6,9 +6,7 @@ func_title(){
   clear
   # Title
   echo '============================================================================'
-  echo ' Giptables.sh | [Version]: 1.0 | [Updated]: 11.13.2013'
-  echo '============================================================================'
-  echo ' [By]: Michael Wright | [GitHub]: https://github.com/themightyshiv'
+  echo ' Geotables.sh | [Version]: 1.0 | [Updated]: 11.13.2013'
   echo '============================================================================'
   echo
 }
