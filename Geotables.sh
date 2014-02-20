@@ -6,7 +6,7 @@ func_title(){
   clear
   # Title
   echo '============================================================================'
-  echo ' Geotables.sh | [Version]: 1.0.1 | [Updated]: 01.14.2014'
+  echo ' Geotables.sh | [Version]: 1.0.2 | [Updated]: 02.20.2014'
   echo '============================================================================'
   echo
 }
@@ -52,7 +52,7 @@ func_install(){
       echo '[*] Verifying Dependency Installation'
       for pkg in gcc gcc-c++ make automake unzip zip xz kernel-devel-${kerneldev} iptables-devel wget perl-Text-CSV_XS
       do
-        installed=`rpm -qa|grep '^${pkg}'|wc -l`
+        installed=`rpm -qa|grep ^${pkg}|wc -l`
         if [ ${installed} == '0' ]
         then
           echo "[!] ${pkg} Failed Installation"
