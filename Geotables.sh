@@ -6,7 +6,7 @@ func_title(){
   clear
   # Title
   echo '============================================================================'
-  echo ' Geotables.sh | [Version]: 1.0.2 | [Updated]: 02.20.2014'
+  echo ' Geotables.sh | [Version]: 1.1.0 | [Updated]: 03.06.2014'
   echo '============================================================================'
   echo
 }
@@ -16,8 +16,7 @@ func_install(){
   # Print Title
   func_title
   # Debian-Based Installer
-  if [ -f /etc/debian_version ]
-  then
+  if [ -f /etc/debian_version ]; then
     echo '[*] Identified OS: Debian-Based'
     echo '[*] Installing Dependencies Using: apt-get'
     echo '[*] Updating Package Lists'
@@ -29,22 +28,16 @@ func_install(){
     echo '[*] Initializing First Run Update'
     func_update
   # RHEL-Based Installer
-  elif [ -f /etc/system-release ]
-    then
+  elif [ -f /etc/system-release ]; then
     kerneldev=`uname -r`
+    cpuarch=`uname -m`
     failed=0
     # RHEL-Based Installer Based On Web Article By TiTex
     # (http://www.howtoforge.com/xtables-addons-on-centos-6-and-iptables-geoip-filtering)
     echo '[*] Identified OS: RHEL-Based'
-    echo '[*] WARNING: Continuing Will...'
-    echo ' |---> Disable SELinux'
-    echo ' |---> Add RPMForge Yum Repository'
+    echo '[*] WARNING: Continuing Will Add RPMForge Yum Repository'
     read -p '[?] Continue With Install? (y/n): ' install
-    if [ ${install} == 'y' ]
-    then
-      echo '[*] Disabling SELinux'
-      sed -i 's/SELINUX=.*/SELINUX=disabled/g' /etc/selinux/config
-      echo 0 > /selinux/enforce
+    if [ ${install} == 'y' ]; then
       echo '[*] Adding RPMForge Yum Repository'
       rpm -i http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.i686.rpm
       echo '[*] Installing Dependencies Using: yum+gcc'
@@ -53,14 +46,12 @@ func_install(){
       for pkg in gcc gcc-c++ make automake unzip zip xz kernel-devel-${kerneldev} iptables-devel wget perl-Text-CSV_XS
       do
         installed=`rpm -qa|grep ^${pkg}|wc -l`
-        if [ ${installed} == '0' ]
-        then
+        if [ ${installed} == '0' ]; then
           echo "[!] ${pkg} Failed Installation"
           ((failed++))
         fi
       done
-      if [ ${failed} != '0' ]
-      then
+      if [ ${failed} != '0' ]; then
         echo '[!] Installation Aborted.'
         echo '[!] Reason: Failed Dependency Installation'
         echo
@@ -68,12 +59,21 @@ func_install(){
       fi
       echo '[*] Dependencies Installed Successfully'
       echo '[*] Downloading xtables-addons Source' 
-      wget -q http://downloads.sourceforge.net/project/xtables-addons/Xtables-addons/1.37/xtables-addons-1.37.tar.xz
-      tar -xf xtables-addons-1.37.tar.xz && cd xtables-addons-1.37/
+      wget -q http://downloads.sourceforge.net/project/xtables-addons/Xtables-addons/1.47/xtables-addons-1.47.1.tar.xz
+      tar -xf xtables-addons-1.47.1.tar.xz && cd xtables-addons-1.47.1/
+      echo '[*] Preparing Kernel Sources'
+      sed -i 's:^#define CONFIG_IP6_NF_IPTABLES_MODULE 1:/* #define CONFIG_IP6_NF_IPTABLES_MODULE 1 */:g' /lib/modules/${kerneldev}/build/include/linux/autoconf.h
       echo '[*] Building xtables-addons'
       ./configure && make
       echo '[*] Installing xtables-addons'
       make install
+      echo '[*] Setting Appropriate Module Contexts'
+      chcon -vR --user=system_u /lib/modules/*/extra/*.ko
+      if [ -d '/lib/xtables' ]; then
+        chcon -vR --type=lib_t /lib/xtables/*.so
+      else
+        chcon -vR --type=lib_t /lib64/xtables/*.so
+      fi
       echo '[*] Initializing First Run Update'
       cd ..
       func_update
@@ -93,8 +93,7 @@ func_install(){
 # Update GeoIP Data Files Function
 func_update(){
   # Check For Necessary Directories
-  if [  ! -d /usr/share/xt_geoip ]
-  then
+  if [  ! -d /usr/share/xt_geoip ]; then
     echo '[*] Creating Directory: /usr/share/xt_geoip'
     mkdir /usr/share/xt_geoip
   fi
@@ -117,8 +116,7 @@ func_update(){
 }
 
 # Privileges Check
-if [ `whoami` != root ]
-then
+if [ `whoami` != root ]; then
   func_title
   echo '[!] This script requires root privileges.'
   echo

@@ -1,3 +1,10 @@
+[03/06/2014]
+     Released.: Version 1.1.0
+     Added....: Support For Xtables-Addons 1.47.1 (Issue #3)
+     Added....: Installation Without Disabling SELinux on RHEL-Based OS (Issue #4)
+     Fixed....: Package Installation and Compilation Issue (Issue #2)
+     Modified.: Code Cleanup
+
 [02/20/2014]
      Released.: Version 1.0.2
      Fixed....: Issue In RHEL-Based Dependency Verification Check (Issue #2)
